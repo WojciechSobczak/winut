@@ -7,9 +7,11 @@ include_directories("./lib/cpput/include/")
 link_libraries("cpput")
 
 add_library(${PROJECT_NAME} STATIC
-    "./src/errors.cpp"
-    "./src/winapi_exception.cpp"
+    "src/errors.cpp"
+    "src/winapi_exception.cpp"
+    "src/process.cpp"
 )
+
 target_include_directories(${PROJECT_NAME} PRIVATE "./include/")
 
 if (${WINUT_DEV_BUILD})
