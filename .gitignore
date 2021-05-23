@@ -1,0 +1,6 @@
+.git
+.vs
+out
+main.cpp
+CMakeSettings.json
+lib
