@@ -10,6 +10,7 @@ add_library(${PROJECT_NAME} STATIC
     "src/errors.cpp"
     "src/winapi_exception.cpp"
     "src/process.cpp"
+    "src/utils.cpp"
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE "./include/")
