@@ -5,6 +5,7 @@
 #include <string>
 #include <functional>
 #include <optional>
+#include "utils.hpp"
 
 namespace winut {
 
@@ -21,12 +22,30 @@ namespace winut {
     struct process_details {
         process_module process_module{};
         std::vector<dll_module> dlls_loaded{};
-        std::vector<other_process_module> other_modules_loaded{};
+        std::vector<other_process_module> other_modules_loaded{}; 
     };
 
     std::vector<DWORD> get_all_processes_pids(uint32_t process_ids_count_to_preallocate = 2048);
 
     process_details get_process_details(DWORD process_id);
+
+
+    enum class ToolhelpSnapshotFlags : DWORD {
+        SNAPSHOT_INRERITABLE = TH32CS_INHERIT,
+        ALL_HEAPS_OF_PROVIDED_PROCESS = TH32CS_SNAPHEAPLIST,
+        ALL_64_BIT_MODULES_OF_PROVIDED_PROCESS = TH32CS_SNAPMODULE,
+        ALL_32_BIT_BIT_OF_PROVIDED_PROCESS = TH32CS_SNAPMODULE32,
+        ALL_FROM_PROVIDED_PROCESS_NO_THREADS = (TH32CS_SNAPHEAPLIST | TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32),
+        ALL_SYSTEM_PROCESSES = TH32CS_SNAPPROCESS,
+        ALL_SYSTEM_THREADS = TH32CS_SNAPTHREAD,
+        ALL_FROM_SYSTEM = (TH32CS_SNAPHEAPLIST | TH32CS_SNAPPROCESS | TH32CS_SNAPTHREAD | TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32),
+    };
+
+    inline ToolhelpSnapshotFlags operator|(ToolhelpSnapshotFlags a, ToolhelpSnapshotFlags b) {
+        return static_cast<ToolhelpSnapshotFlags>(static_cast<DWORD>(a) | static_cast<DWORD>(b));
+    }
+
+    handle_guard create_toolhelp_snapshot(ToolhelpSnapshotFlags flags, std::optional<DWORD> process_id);
 
     struct thread_entry {
         DWORD size;

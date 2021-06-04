@@ -1,3 +1,4 @@
+#include "..\include\winut\process.hpp"
 #include <winut/process.hpp>
 #include <winut/utils.hpp>
 
@@ -9,8 +10,6 @@
 #include <utility>
 
 #undef max
-
-
 
 std::vector<DWORD> winut::get_all_processes_pids(uint32_t process_ids_count_to_preallocate) {
     std::vector<DWORD> output(process_ids_count_to_preallocate);
@@ -91,6 +90,14 @@ winut::thread_entry::thread_entry(const THREADENTRY32& thread_entry) {
     this->thread_id = thread_entry.th32ThreadID;
     this->owner_process_id = thread_entry.th32OwnerProcessID;
     this->kernel_base_priority_level = thread_entry.tpBasePri;
+}
+
+winut::handle_guard winut::create_toolhelp_snapshot(winut::ToolhelpSnapshotFlags flags, std::optional<DWORD> process_id) {
+    winut::handle_guard snapshot_handle = CreateToolhelp32Snapshot(static_cast<DWORD>(flags), process_id.has_value() ? process_id.value() : 0);
+    if (snapshot_handle.is_invalid()) {
+        throw winut::winapi_exception(L"CreateToolhelp32Snapshot() failed");
+    }
+    return snapshot_handle;
 }
 
 void winut::iterate_through_all_system_threads(HANDLE snapshot_handle, std::function<void(winut::thread_entry&&)> on_thread_iteration) {

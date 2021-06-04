@@ -7,13 +7,14 @@ namespace winut {
     private:
         HANDLE handle;
     public:
-        handle_guard(HANDLE handle);
-        ~handle_guard();
-        HANDLE get();
-        bool is_invalid();
-        bool is_valid();
-        bool is_null();
-        bool is_not_null();
+        handle_guard(HANDLE handle) noexcept;
+        handle_guard(handle_guard&& handle) noexcept;
+        ~handle_guard() noexcept;
+        HANDLE get() const noexcept;
+        bool is_invalid() const noexcept;
+        bool is_valid() const noexcept;
+        bool is_null() const noexcept;
+        bool is_not_null() const noexcept;
     };
 
     constexpr uint64_t filetime_to_uint64(const FILETIME& filetime) noexcept {
@@ -22,6 +23,5 @@ namespace winut {
         buffer.HighPart = filetime.dwHighDateTime;
         return buffer.QuadPart;
     }
-
 };
 
